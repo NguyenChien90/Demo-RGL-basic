@@ -8,6 +8,7 @@ import ra.sevice.user.IUserService;
 import ra.sevice.user.UserServiceIMPL;
 import ra.view.acount.AdminManager;
 import ra.view.acount.UserManager;
+
 import static ra.config.Color.*;
 
 public class Home {
@@ -15,10 +16,11 @@ public class Home {
         Users userLogin = new Config<Users>().readFile(Config.URL_USER_LOGIN);
         if (userLogin != null) {
             new Home().checkRoleLogin(userLogin);
-        }else {
+        } else {
             new Home().menuHome();
         }
     }
+
     IUserService userService = new UserServiceIMPL();
     public static Users userLogin;
     public static Config<Users> config = new Config<>();
@@ -31,15 +33,15 @@ public class Home {
             for (Users users : userService.findAll()) {
                 System.out.println(users);
             }
-            System.out.println(CYAN_BOLD_BRIGHT+"\n.--------------------------------------------------------.");
-            System.out.println("|                         TRANG CHU                      |");
-            System.out.println("|--------------------------------------------------------|");
-            System.out.println("|                       1. DANG NHAP                     |");
-            System.out.println("|                       2. DANG KY                       |");
-            System.out.println("|                       0. BACK                          |");
-            System.out.println("'--------------------------------------------------------'\n");
+            System.out.println(YELLOW_BOLD_BRIGHT + "\n                                   .--------------------------------------------------------.");
+            System.out.println("                                   |                         TRANG CHU                      |");
+            System.out.println("                                   |--------------------------------------------------------|");
+            System.out.println("                                   |                       1. DANG NHAP        (OK          |");
+            System.out.println("                                   |                       2. DANG KY          (OK)         |");
+            System.out.println("                                   |                       0. BACK             (OK)         |");
+            System.out.println("                                   '--------------------------------------------------------'\n" + RESET);
 
-            System.out.print("Lựa chọn (0/1/2): "+RESET);
+            System.out.print("Lựa chọn (0/1/2): ");
             switch (Validate.validateInt()) {
                 case 1:
                     login();
@@ -71,28 +73,29 @@ public class Home {
         } else {
             //dung ten tk voi mk
             checkRoleLogin(users);
-            }
-        }
-        public void checkRoleLogin(Users users) {
-            if (users.getRole().equals(RoleName.AMIN)) {
-//                userLogin = users;
-                config.writeFile(Config.URL_USER_LOGIN, users);// ghi doi tuong Users đang đăng nhập vào file
-                // chuyen den trang quanr ly ADMIN
+            if (!users.isStatus()) {
                 System.out.println("Dang nhap thanh cong");
-                new AdminManager().menuAmin();
-            } else {
-                if (users.isStatus()) {
-//                    userLogin = users;
-                    config.writeFile(Config.URL_USER_LOGIN, users);// ghi doi tuong Users đang đăng nhập vào file
-                    // chuyen den trang user
-                    System.out.println("Dang nhap thanh cong");
-                    new UserManager().menuUser();
-                } else {
-                    System.out.println("Tai khoan cua ban dang bi khoa");
-                }
             }
         }
+    }
 
+    public void checkRoleLogin(Users users) {
+        if (users.getRole().equals(RoleName.AMIN)) {
+//                userLogin = users;
+            config.writeFile(Config.URL_USER_LOGIN, users);// ghi doi tuong Users đang đăng nhập vào file
+            // chuyen den trang quanr ly ADMIN
+            new AdminManager().menuAmin();
+        } else {
+            if (users.isStatus()) {
+//                    userLogin = users;
+                config.writeFile(Config.URL_USER_LOGIN, users);// ghi doi tuong Users đang đăng nhập vào file
+                // chuyen den trang user
+                new UserManager().menuUser();
+            } else {
+                System.out.println("Tai khoan cua ban dang bi khoa");
+            }
+        }
+    }
 
 
     private void register() {
